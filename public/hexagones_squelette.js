@@ -1,4 +1,4 @@
-
+//CODE COMPLET
       function creeHexagone(rayon) {
         var points = new Array();
         for (var i = 0; i < 6; ++i) {

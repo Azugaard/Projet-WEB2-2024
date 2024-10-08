@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
             io.emit('entree',joueurs);// recoit le nom du joueur entrant et verfie si il est eligible
         } else {
             console.log("La partie est pleine ou le nom est déjà pris");
-            token=0;
+            token=0; //le token va nous servir à qq chose quand les 2 joueurs auront rejoint la partie
             console.log("token a 0");
         }
     });

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title> CHATBOX </title>
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="https://d3js.org/d3.v7.min.js"></script>
+      <script src="/hexagones_squelette.js"></script>
+      <script>
+        var socket = io();
+        window.addEventListener('load', () => { test(); } );
+        function entrerDansLaPartie(){
+          socket.emit('entree',nom.value); //envoie au serveur le nom du joueur entrant
+        }
+        function sortirDeLaPartie(){
+          socket.emit('sortie',nom.value);
+        }
+        function envoyermsg(){
+          const messagerecu = document.getElementById('message');
+          const message = messagerecu.value;
+          console.log("msg envoyé");
+          socket.emit('message', message,nom.value);
+          messagerecu.value = '';
+        }
+        socket.on('entree',data => {
+          document.getElementById("players").innerHTML=data;
+        });//affiche la liste des joueurs quand il recoit un signal entree
+        socket.on('sortie',data => {
+          console.log(joueurs.length);
+          if(!(joueurs.length==2)){
+            token=-1;
+            console.log("token a -1");
+          }// a modifier
+          document.getElementById("players").innerHTML=data;
+
+        });//affiche la liste des joueurs quand il recoit un signal de sortie
+        socket.on('message',data => {
+          const li = document.createElement('li');
+          li.textContent = data.nom +' : '+ data.message;
+          document.getElementById('listemsg').appendChild(li);
+        });
+        document.getElementById('selection').addEventListener('click', function() {
+          socket.emit('couleur', (this.value,nom));
+        });
+        socket.on('couleurChoisie', data => { //recoit la couleur choisie par le joueur et son nom
+          // A REMPLIR je dois assigner a l'hexagone du joueur la couleur que j'ai recu
+        });
+      </script>
+  </head>
+  <body>
+    <div id="joueurs"> </div>
+    Veuillez saisir votre pseudo : <input id="nom" type="text" placeholder="pseudo" required/>
+    <button type="button"
+            onClick="entrerDansLaPartie()">
+            Entrer dans la partie
+    </button>
+    <button type="button"
+            onClick="sortirDeLaPartie()">
+            Sortir de la partie
+    </button>
+
+    <div> Joueurs dans la partie : </div>
+      <div><li id="players"></li></div>
+        <div class="conteneur">
+          <form class="boitemsg" id="boitemsg">
+            <ul id="listemsg"></ul>
+            <input type="text" id="message" placeholder="Votre message"/>
+            <button type="button" class="send" id="send" onclick="envoyermsg()"> Envoyer </button>
+          </form>
+        </div>
+        <div> Générer le damier : </div>
+        <div> 
+          <input type="color" id="selection" name="couleur" value="#ff0000">
+          <button type="button" id="generation" onclick="genereDamier(30,11,11)"> Générer le damier </button>
+        </div>
+        <div> <svg width="900" height="800" ></svg></div>
+  </body>
+  <style> 
+  .conteneur {
+  position: relative;
+  display: flex;
+}
+#listemsg {
+  flex-grow: 5;
+  overflow-y: auto; /* Ajoute une barre de défilement si nécessaire */
+}
+.boitemsg {
+  position: absolute;
+  border: 3px outset #ff0000;
+  bottom: -100px;
+  right: 1px;
+  input[type=text]:focus {
+  background-color: rgb(255, 246, 114);
+  }
+}
+  .send {
+  input[type=button], input[type=submit], input[type=reset] {
+  background-color: #76f3c6;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  }
+  }
+
+  </style>
+</html>

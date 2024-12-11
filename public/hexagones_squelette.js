@@ -1,5 +1,7 @@
 var socket = io();
 
+var nom = ""
+
 var couleur =["red", "yellow", "pink", "blue", "green", "orange", "purple"]
 
 function initialiserGrille(nbLignes, nbColonnes) {
@@ -14,7 +16,8 @@ function initialiserGrille(nbLignes, nbColonnes) {
 }
 
 function entrerDansLaPartie(){
-socket.emit('entree',nom.value); //envoie au serveur le nom du joueur entrant
+    nom = document.getElementById("nom");
+    socket.emit('entree',nom.value); //envoie au serveur le nom du joueur entrant
 }
 
 function sortirDeLaPartie(){
@@ -102,7 +105,7 @@ function genereDamier(rayon, nbLignes, nbColonnes) {
                 .attr("id","h"+(ligne*nbLignes+colonne))
                 .on("click", function(d) {
                     console.log(d3.select(this).attr('id'));
-                    socket.emit('jouer', (this.ligne, this.colonne, ))//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
+                    socket.emit('jouer', (this.ligne, this.colonne, nom))//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
             });
             }
     }

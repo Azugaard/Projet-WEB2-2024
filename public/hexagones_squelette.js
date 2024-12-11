@@ -1,8 +1,7 @@
 var socket = io();
-
+var id;
 var nom = ""
 
-var couleur =["red", "yellow", "pink", "blue", "green", "orange", "purple"]
 
 
 function entrerDansLaPartie(){
@@ -24,6 +23,7 @@ messagerecu.value = '';
 
 socket.on('entree',data => {
 document.getElementById("players").innerHTML=data;
+id = data.joueur;
 });
 
 socket.on('majGrille', (ligne, colonne, nom) => {
@@ -95,7 +95,7 @@ function genereDamier(rayon, nbLignes, nbColonnes) {
                 .attr("id","h"+(ligne*nbLignes+colonne))
                 .on("click", function(d) {
                     console.log(d3.select(this).attr('id'));
-                    socket.emit('jouer', (this.ligne, this.colonne, nom))//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
+                    socket.emit('jouer', (this.ligne, this.colonne, id.ID))//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
             });
             }
     }

@@ -4,16 +4,6 @@ var nom = ""
 
 var couleur =["red", "yellow", "pink", "blue", "green", "orange", "purple"]
 
-function initialiserGrille(nbLignes, nbColonnes) {
-    var grille = [];
-    for (var i = 0; i < nbLignes; i++) {
-        grille[i] = [];
-        for (var j = 0; j < nbColonnes; j++) {
-            grille[i][j] = 0;
-        }
-    }
-    return grille;
-}
 
 function entrerDansLaPartie(){
     nom = document.getElementById("nom");

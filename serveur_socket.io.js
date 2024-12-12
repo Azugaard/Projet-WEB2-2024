@@ -9,9 +9,6 @@ var joueurs=[];
 var droit=0;
 var id = 0;
 var couleurs =["red", "yellow", "pink", "blue", "green", "orange", "purple"]
-
-
-
 plateau;
 
 function initialiserGrille(nbLignes, nbColonnes) {
@@ -19,12 +16,11 @@ function initialiserGrille(nbLignes, nbColonnes) {
     for (var i = 0; i < nbLignes; i++) {
         grille[i] = [];
         for (var j = 0; j < nbColonnes; j++) {
-            grille[i][j] = 0;
+            grille[i][j] = -1;
         }
     }
     return grille;
 }
-
 
 app.get('/', (request, response) => {
     response.sendFile('client.html', {root: __dirname});
@@ -55,11 +51,12 @@ io.on('connection', (socket) => {
             alert("pas ton tour");
             return;
         }
-        if (grille[ligne][colonne] == 0) { //case libre
+        if (plateau[ligne][colonne] == -1) { //case libre
             var j=joueurs.indexOf(nom)
-            grille[ligne][colonne] = j;
+            plateau[ligne][colonne] = j;
+            c=joueurs[j].couleur
             droit==0?droit=1:0;
-            socket.emit('majGrille', (ligne, colonne, j ));
+            socket.emit('majHex', (ligne, colonne, c ));
 
         } else {
             alert("case déja occupée")

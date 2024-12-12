@@ -26,8 +26,10 @@ document.getElementById("players").innerHTML=data;
 id = data.joueur;
 });
 
-socket.on('majGrille', (ligne, colonne, nom) => {
-    //faut update les hexagones, les couleurs
+socket.on('majHex', (ligne, colonne, couleur) => {
+    var hexId = "h" + (ligne * nbLignes + colonne);
+    var hexagone = d3.select("#" + hexId);
+    hexagone.attr("fill", couleur);
 });
 
 socket.on('sortie',data => {

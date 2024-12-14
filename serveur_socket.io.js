@@ -19,7 +19,7 @@ function initialiserGrille(nbLignes, nbColonnes) {
     for (var i = 0; i < nbLignes; i++) {
         grille[i] = [];
         for (var j = 0; j < nbColonnes; j++) {
-            grille[i][j] = 0;
+            grille[i][j] = -1;
         }
     }
     return grille;

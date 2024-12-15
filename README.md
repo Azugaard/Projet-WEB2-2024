@@ -14,3 +14,4 @@ Etape 2 :
 ANNEXE
 [x] conditions de victoires partiellement implantées
 [x] Gestion des erreurs
+[x] rejouabilité partiellement implémentée

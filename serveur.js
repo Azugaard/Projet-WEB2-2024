@@ -42,13 +42,16 @@ io.on('connection', (socket) => {
             socket.emit('entree',{joueurs,joueur});// recoit le nom du joueur entrant et verfie si il est eligible
         } else {
             console.log("La partie est pleine ou le nom est déjà pris");
+            socket.emit('erreur', "Nom déjà selectionné !");
             token=0; //le token va nous servir à qq chose quand les 2 joueurs auront rejoint la partie
             console.log("token a 0");
+            return;
         }
     });
     socket.on('jouer', (data) => {
         if (!data) {
             console.log("Données invalides :", data);
+            socket.emit('erreur', "Données invalides!");
             return;
         }
         idj=data.j
@@ -83,19 +86,22 @@ io.on('connection', (socket) => {
             console.log(nom ,"est sorti de la partie");
             console.log(joueurs);
             io.emit('sortie',joueurs);
+        } else {
+            console.log("id non retrouvé");
+            socket.emit('erreur', "id du joueur inconnu!");
+            return;
         }
     });
 
     socket.on('message', (msg,nom) => {
-        console.log("msg recu");
-        io.emit('message', { nom:nom, message:msg });
-    });
-
-    socket.on('couleur',(couleur,nom) => {
-        console.log("un joueur a selectionné sa couleur");
-        let index=joueurs.indexOf(nom);
-        joueurs[index].couleur=couleur;
-        io.emit('couleurChoisie',(couleur,joueur))
+        if (!msg){
+            console.log("MEssage non valide");
+            socket.emit('erreur', "DOnnées du message non valides!");
+            return;
+        } else {
+            console.log("msg recu");
+            io.emit('message', { nom:nom, message:msg });
+        }
     });
 
     socket.on("rejouer" , (data) => {

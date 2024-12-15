@@ -25,7 +25,7 @@ function initialiserGrille(nbLignes, nbColonnes) {
 }
 
 app.get('/', (request, response) => {
-    response.sendFile('client_socket.io.html', {root: __dirname});
+    response.sendFile('clienthtml.html', {root: __dirname});
 });
 
 io.on('connection', (socket) => {
@@ -47,7 +47,14 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('jouer', (data) => {
-        if(data.j.ID != droit){
+        if (!data) {
+            console.log("Données invalides :", data);
+            return;
+        }
+        idj=data.j
+        console.log(idj)
+        console.log(droit)
+        if(idj != droit){
             console.log("pas ton tour");
             return;
         }
@@ -57,13 +64,14 @@ io.on('connection', (socket) => {
         console.log(co);
         if (plateau[li][co] == -1) { //case libre
             plateau[li][co] = data.j.ID;
-            const c = data.j.couleur
+            const c = couleurs[idj]
             console.log(c);
             droit = (droit == 0) ? 1 : 0;
             io.emit('majHex', {ligne : li, colone : co, coul : c });
 
         } else {
-            alert("case déja occupée")
+            console.log("Case déjà occupée");
+            socket.emit('erreur', "La case est déjà occupée !");
             return;
         }
     });
@@ -90,7 +98,7 @@ io.on('connection', (socket) => {
         io.emit('couleurChoisie',(couleur,joueur))
     });
 
-    socket.on("rejouer" ,data => {
+    socket.on("rejouer" , (data) => {
         plateau = initialiserGrille(data.nbLignes, data.nbColonnes);
     });
 });

@@ -10,15 +10,15 @@ function entrerDansLaPartie(){
 }
 
 function sortirDeLaPartie(){
-socket.emit('sortie',id);
+    socket.emit('sortie',id);
 }
 
 function envoyermsg(){
-const messagerecu = document.getElementById('message');
-const message = messagerecu.value;
-console.log("msg envoyé");
-socket.emit('message', message,nom.value);
-messagerecu.value = '';
+    const messagerecu = document.getElementById('message');
+    const message = messagerecu.value;
+    console.log("msg envoyé");
+    socket.emit('message', message,nom.value);
+    messagerecu.value = '';
 }
 
 socket.on('entree',data => {
@@ -26,7 +26,7 @@ socket.on('entree',data => {
     for (j of data.joueurs){
         document.getElementById("players").innerHTML += `${j.NOM} ,`;
     }
-    id = data.joueur;
+    id = data.joueur.ID;
 });
 
 socket.on('majHex', (data) => {
@@ -44,18 +44,22 @@ socket.on('majHex', (data) => {
 });
 
 socket.on('sortie',data => {
-console.log(joueurs.length);
-if(!(joueurs.length==2)){
-    token=-1;
-    console.log("token a -1");
-}// a modifier jme souviens plus trop quoi modifier dsl je demanderai à pompidor vendredi matin
-document.getElementById("players").innerHTML=data;
+    console.log(joueurs.length);
+    if(!(joueurs.length==2)){
+        token=-1;
+        console.log("token a -1");
+    }// a modifier jme souviens plus trop quoi modifier dsl je demanderai à pompidor vendredi matin
+    document.getElementById("players").innerHTML=data;
 });//affiche la liste des joueurs quand il recoit un signal de sortie
 
 socket.on('message',data => {
-const li = document.createElement('li');
-li.textContent = data.nom +' : '+ data.message;
-document.getElementById('listemsg').appendChild(li);
+    const li = document.createElement('li');
+    li.textContent = data.nom +' : '+ data.message;
+    document.getElementById('listemsg').appendChild(li);
+});
+
+socket.on('erreur', (message) => {
+    alert(message);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -64,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nbColonnes = 11;
     genereDamier(rayon, nbLignes, nbColonnes);
 });
-
 
 function creeHexagone(rayon) {
     var points = new Array();

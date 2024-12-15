@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title> JEU DE L'HEX </title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="/clientjs.js"></script>
+    <script>
+    </script>
+</head>
+<body>
+    <div id="joueurs"> </div>
+    Veuillez saisir votre pseudo : <input id="nom" type="text" placeholder="pseudo" required/>
+    <button type="button"
+            onClick="entrerDansLaPartie()">
+            Entrer dans la partie
+    </button>
+    <button type="button"
+            onClick="sortirDeLaPartie()">
+            Sortir de la partie
+    </button>
+
+    <div> Joueurs dans la partie : </div>
+    <div><li id="players"></li></div>
+        <div class="conteneur">
+        <form class="boitemsg" id="boitemsg">
+            <ul id="listemsg"></ul>
+            <input type="text" id="message" placeholder="Votre message"/>
+            <button type="button" class="send" id="send" onclick="envoyermsg()"> Envoyer </button>
+        </form>
+        <div id = "tablier"> <svg width="1200" height="1000" ></svg></div>
+</body>
+<style> 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.conteneur {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-top: 2px solid #ccc;
+}
+.boitemsg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+#listemsg {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#message {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+button.send {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+}
+#tablier svg {
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+</style>
+</html>

@@ -4,7 +4,7 @@
     <title> CHATBOX </title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="/client.js"></script>
+    <script src="/hexagones_squelette.js"></script>
     <script>
     </script>
 </head>
@@ -28,15 +28,6 @@
             <input type="text" id="message" placeholder="Votre message"/>
             <button type="button" class="send" id="send" onclick="envoyermsg()"> Envoyer </button>
         </form>
-        </div>
-        <div> Générer le damier : </div>
-        <div> 
-          Choisissez votre couleur
-          <input type="select" id="selection" name="couleur" value="#ff0000">
-        </div>
-        <div>
-        <button type="button" id="generation" onclick="genereDamier(20,11,11)"> Générer le damier </button>
-        </div>
         <div id = "tablier"> <svg width="900" height="800" ></svg></div>
 </body>
 <style> 

@@ -10,7 +10,7 @@ function entrerDansLaPartie(){
 }
 
 function sortirDeLaPartie(){
-socket.emit('sortie',nom.value);
+socket.emit('sortie',id);
 }
 
 function envoyermsg(){
@@ -22,12 +22,25 @@ messagerecu.value = '';
 }
 
 socket.on('entree',data => {
-document.getElementById("players").innerHTML=data;
-id = data.joueur;
+    document.getElementById("players").innerHTML = "";
+    for (j of data.joueurs){
+        document.getElementById("players").innerHTML += `${j.NOM} ,`;
+    }
+    id = data.joueur;
 });
 
-socket.on('majGrille', (ligne, colonne, nom) => {
-    //faut update les hexagones, les couleurs
+socket.on('majHex', (data) => {
+    console.log(data.ligne);
+    console.log(data.colone);
+    console.log(data.coul);
+    var hexId = `h${data.ligne}${data.colone}`;
+    const hexagone = document.getElementById(hexId);
+    if (hexagone){
+        hexagone.setAttribute("fill", data.coul);
+        hexagone.setAttribute("disabled", true);    
+    } else {
+        console.error(`Hexagone ${hexId} non trouvé`);
+    }
 });
 
 socket.on('sortie',data => {
@@ -45,13 +58,13 @@ li.textContent = data.nom +' : '+ data.message;
 document.getElementById('listemsg').appendChild(li);
 });
 
-document.getElementById('selection').addEventListener('click', function() {
-socket.emit('couleur', (this.value,nom));
+document.addEventListener('DOMContentLoaded', () => {
+    const rayon = 20;
+    const nbLignes = 11;
+    const nbColonnes = 11;
+    genereDamier(rayon, nbLignes, nbColonnes);
 });
 
-socket.on('couleurChoisie', data => { //recoit la couleur choisie par le joueur et son nom
-  // A REMPLIR je dois assigner a l'hexagone du joueur la couleur que j'ai recu
-});
 
 function creeHexagone(rayon) {
     var points = new Array();
@@ -69,7 +82,6 @@ function genereDamier(rayon, nbLignes, nbColonnes) {
     distance =  rayon - (Math.sin(1 * Math.PI / 3) * rayon);  // plus grande distance entre l'hexagone et le cercle circonscrit
     d3.select("#damier").append("svg").attr("width", nbColonnes*(rayon*2+distance)).attr("height", nbLignes*(rayon+distance*2));
     var hexagone = creeHexagone(rayon);
-    var grille=initialiserGrille(nbLignes,nbColonnes);
     for (var ligne=0; ligne < nbLignes; ligne++) {
         for (var colonne=0; colonne < nbColonnes; colonne++) {
             var d = "";
@@ -91,11 +103,16 @@ function genereDamier(rayon, nbLignes, nbColonnes) {
                 .append("path")
                 .attr("d", d)
                 .attr("stroke-width",1) // car un id doit commencer par une lettre
-                .attr("stroke","white")
-                .attr("id","h"+(ligne*nbLignes+colonne))
+                .attr("stroke","black")
+                .attr("id",`h${ligne}${colonne}`)
+                .attr("ligne", ligne)
+                .attr("fill", "#ffffff")
+                .attr("colonne", colonne)
                 .on("click", function(d) {
                     console.log(d3.select(this).attr('id'));
-                    socket.emit('jouer', (this.ligne, this.colonne, id.ID))//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
+                    const hligne = this.getAttribute("ligne");
+                    const hcolonne = this.getAttribute("colonne")
+                    socket.emit('jouer', {l : hligne, c : hcolonne, j : id})//ici je dois renvoyer le nom du joueur qui a cliqué mais jsp comment faire
             });
             }
     }

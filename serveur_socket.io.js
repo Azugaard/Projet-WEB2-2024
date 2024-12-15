@@ -1,4 +1,5 @@
 const express = require('express');
+const { lutimesSync } = require('fs');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -6,13 +7,11 @@ const io = new require("socket.io")(server);
 server.listen(8888, () => {console.log('Le serveur écoute sur le port 8888');});
 app.use(express.static('public'));
 var joueurs=[];
+var pseudos = [];
 var droit=0;
 var id = 0;
 var couleurs =["red", "yellow", "pink", "blue", "green", "orange", "purple"]
-
-
-
-plateau;
+var plateau = initialiserGrille(11,11);
 
 function initialiserGrille(nbLignes, nbColonnes) {
     var grille = [];
@@ -25,53 +24,54 @@ function initialiserGrille(nbLignes, nbColonnes) {
     return grille;
 }
 
-
 app.get('/', (request, response) => {
-    response.sendFile('client.html', {root: __dirname});
+    response.sendFile('client_socket.io.html', {root: __dirname});
 });
 
 io.on('connection', (socket) => {
     console.log('Un utilisateur s\'est connecté');
 
     socket.on('entree',nom => {
-        if (joueurs.length == 0){
-            plateau = initialiserGrille(11, 11);
-        }
-        if(joueurs.length<2 && !(joueurs.includes(nom))){
+        if(joueurs.length<2 && !(pseudos.includes(nom))){
             console.log(nom ,"est entré dans la partie");
             joueur = {NOM : nom, ID : id, couleur: couleurs.pop()};
             joueurs.push(joueur);
+            pseudos.push(nom)
             id++;
             console.log(joueurs);
-            io.emit('entree',(joueurs,joueur));// recoit le nom du joueur entrant et verfie si il est eligible
+            socket.emit('entree',{joueurs,joueur});// recoit le nom du joueur entrant et verfie si il est eligible
         } else {
             console.log("La partie est pleine ou le nom est déjà pris");
             token=0; //le token va nous servir à qq chose quand les 2 joueurs auront rejoint la partie
             console.log("token a 0");
         }
     });
-    socket.on('jouer', (ligne, colonne, nom) => {
-        if(joueurs[droit].NOM!=nom){
-            alert("pas ton tour");
+    socket.on('jouer', (data) => {
+        if(data.j.ID != droit){
+            console.log("pas ton tour");
             return;
         }
-        if (grille[ligne][colonne] == 0) { //case libre
-            var j=joueurs.indexOf(nom)
-            grille[ligne][colonne] = j;
-            droit==0?droit=1:0;
-            socket.emit('majGrille', (ligne, colonne, j ));
+        let li = data.l;
+        let co = data.c;
+        console.log(li);
+        console.log(co);
+        if (plateau[li][co] == -1) { //case libre
+            plateau[li][co] = data.j.ID;
+            const c = data.j.couleur
+            console.log(c);
+            droit = (droit == 0) ? 1 : 0;
+            io.emit('majHex', {ligne : li, colone : co, coul : c });
 
         } else {
             alert("case déja occupée")
             return;
         }
     });
-    socket.on('sortie',nom => {
-        if(joueurs.includes(nom)){
-            let index=joueurs.indexOf(nom);
-            if(index!=-1){
-                joueurs.splice(index,1);
-            }
+    socket.on('sortie',id => {
+        if(joueurs.includes(id)){
+            couleurs.push(id.couleur)
+            let index = joueurs.indexOf(id)
+            joueurs.slice(index, 1);
             console.log(nom ,"est sorti de la partie");
             console.log(joueurs);
             io.emit('sortie',joueurs);
@@ -89,4 +89,9 @@ io.on('connection', (socket) => {
         joueurs[index].couleur=couleur;
         io.emit('couleurChoisie',(couleur,joueur))
     });
+
+    socket.on("rejouer" ,data => {
+        plateau = initialiserGrille(data.nbLignes, data.nbColonnes);
+    });
 });
+

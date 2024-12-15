@@ -1,8 +1,14 @@
 var socket = io();
 var id;
 var nom = ""
+let indice = 0;
+suivre = false;
 
-
+function suivredirect(){
+    suivre = !suivre;
+    socket.emit("suivre",suivre);
+    document.getElementById("suivre").innerText = suivre ? "Ne plus suivre" : "Suivre";
+}
 
 function entrerDansLaPartie(){
     nom = document.getElementById("nom");
@@ -10,7 +16,7 @@ function entrerDansLaPartie(){
 }
 
 function sortirDeLaPartie(){
-    socket.emit('sortie',id);
+    socket.emit('sortie', id);
 }
 
 function envoyermsg(){
@@ -60,6 +66,30 @@ socket.on('message',data => {
 
 socket.on('erreur', (message) => {
     alert(message);
+});
+
+socket.on("synch", (data) =>{
+    console.log(data);
+    const historique = data;
+    for (let coup of historique) {
+        console.log(coup);
+        const hexId = `h${coup.Ligne}${coup.Colone}`;
+        const hexagone = document.getElementById(hexId);
+        if (hexagone) {
+            hexagone.setAttribute("fill", coup.Couleur);
+        }
+    }
+});
+
+socket.on("demandercoups",data =>{
+    for (h of document.querySelectorAll(".hexagone")){
+        h.setAttribute(`fill`,`white`);
+    }
+    for (c of data){
+        const hexId = `h${c.Colone}${c.Ligne}`;
+        const hexagone = document.getElementById(hexId);
+        hexagone.setAttribute(`fill`,c.Couleur);
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {

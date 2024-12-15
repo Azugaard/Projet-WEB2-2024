@@ -19,6 +19,11 @@
             onClick="sortirDeLaPartie()">
             Sortir de la partie
     </button>
+    <button onclick="naviguerHistorique('precedent')">Précédent</button>
+    <button onclick="naviguerHistorique('suivant')">Suivant</button>
+    <button onclick="naviguerHistorique('dernier')">Dernier coup</button>
+    <button id="suivre" onclick="suivredirect()">Suivre la partie</button>
+
 
     <div> Joueurs dans la partie : </div>
     <div><li id="players"></li></div>
@@ -28,9 +33,9 @@
             <input type="text" id="message" placeholder="Votre message"/>
             <button type="button" class="send" id="send" onclick="envoyermsg()"> Envoyer </button>
         </form>
-        <div id = "tablier"> <svg width="1200" height="1000" ></svg></div>
+        <div id = "tablier"> <svg width="900" height="800" ></svg></div>
 </body>
-<style> 
+<style>
 body {
     font-family: Arial, sans-serif;
     margin: 0;

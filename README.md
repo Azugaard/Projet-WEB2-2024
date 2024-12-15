@@ -8,8 +8,8 @@ Etape 1 :
 [x] marche aussi sur 2 ordis différents
 
 Etape 2 :
-[ ] mode spectateur
-[ ] historique
+[x] mode spectateur implanté (suffit de cliquer sur suivre la partie)
+[ ] historique en très grande partie implanté (sockets coupsdemander)
 
 ANNEXE
 [x] conditions de victoires partiellement implantées

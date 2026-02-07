@@ -1,5 +1,4 @@
 Maxime Roche
-Khalil Elhajoui
 
 Etape 1 :
 [x] messagerie fonctionnelle
